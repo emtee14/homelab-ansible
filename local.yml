@@ -22,6 +22,8 @@
       ansible.builtin.command: "ipa hostgroup-find --hosts={{ ansible_facts['fqdn'] }} --raw"
       register: ipa_hostgroup_find
       changed_when: false
+      # rc 1 means "0 matched", which is not an error
+      failed_when: ipa_hostgroup_find.rc not in [0, 1]
       when: ipa_host.rc != 0 or 'memberof' not in ipa_host.stdout
 
     - name: Set ipa_hostgroups fact
