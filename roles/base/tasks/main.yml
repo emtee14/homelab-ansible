@@ -1,0 +1,14 @@
+---
+- name: Install baseline packages
+  ansible.builtin.package:
+    name:
+      - git
+      - curl
+      - vim
+    state: present
+
+- name: Ensure sshd is enabled and running
+  ansible.builtin.service:
+    name: "{{ 'ssh' if ansible_os_family == 'Debian' else 'sshd' }}"
+    state: started
+    enabled: true

@@ -1,0 +1,48 @@
+---
+# Entrypoint run by ansible-pull on every host.
+# Applies the `base` role, then one role per IPA host group the host belongs to
+# (role name == host group name; groups without a matching role are skipped).
+- name: Converge this host
+  hosts: localhost
+  connection: local
+  become: true
+
+  pre_tasks:
+    - name: Authenticate as the host principal
+      ansible.builtin.command: kinit -k
+      changed_when: false
+
+    - name: Read own host record from IPA
+      ansible.builtin.command: "ipa host-show {{ ansible_fqdn }} --raw"
+      register: ipa_host
+      changed_when: false
+      failed_when: false
+
+    - name: Fallback - find host groups containing this host
+      ansible.builtin.command: "ipa hostgroup-find --host={{ ansible_fqdn }} --raw"
+      register: ipa_hostgroup_find
+      changed_when: false
+      when: ipa_host.rc != 0 or 'memberof' not in ipa_host.stdout
+
+    - name: Set ipa_hostgroups fact
+      ansible.builtin.set_fact:
+        ipa_hostgroups: >-
+          {{
+            (ipa_host.stdout | regex_findall('memberof: cn=([^,]+),cn=hostgroups'))
+            if (ipa_host.rc == 0 and 'memberof' in ipa_host.stdout)
+            else (ipa_hostgroup_find.stdout | regex_findall('cn: ([^\n]+)'))
+          }}
+
+    - name: Show discovered host groups
+      ansible.builtin.debug:
+        var: ipa_hostgroups
+
+  roles:
+    - base
+
+  tasks:
+    - name: Apply role for each host group that has one
+      ansible.builtin.include_role:
+        name: "{{ item }}"
+      loop: "{{ ipa_hostgroups }}"
+      when: (playbook_dir ~ '/roles/' ~ item) is directory
