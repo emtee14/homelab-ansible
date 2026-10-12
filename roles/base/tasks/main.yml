@@ -20,11 +20,12 @@
     mode: "0755"
 
 - name: Announce that this host is managed by Ansible
-  ansible.builtin.copy:
+  ansible.builtin.template:
+    src: motd.j2
     dest: /etc/motd.d/ansible-managed
-    content: |
-      ========================================================================
-        This host is managed by Ansible (ansible-pull from homelab-ansible).  
-        Manual changes may be overwritten.
-      ========================================================================
     mode: "0644"
+
+- name: Remove old test-group MOTD marker
+  ansible.builtin.file:
+    path: /etc/motd.d/test-group
+    state: absent

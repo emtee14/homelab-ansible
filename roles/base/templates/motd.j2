@@ -1,0 +1,22 @@
+{# Boxed MOTD. Inner width is 62 columns; keep every row padded to that. #}
+{% set esc = '\x1b' %}
+{% set c = esc ~ '[36m' %}
+{% set b = esc ~ '[1;33m' %}
+{% set r = esc ~ '[0m' %}
+{% set host = ansible_facts['fqdn'] %}
+{% set rows = [
+  '',
+  '  MANAGED BY ANSIBLE',
+  '',
+  '  Host     ' ~ host,
+  '  Source   ' ~ ansible_pull_repo,
+  '  Updates  every ' ~ ansible_pull_interval ~ ' via ansible-pull',
+  '',
+  '  Manual changes may be overwritten.',
+  '',
+] %}
+{{ c }}╔══════════════════════════════════════════════════════════════╗{{ r }}
+{% for row in rows %}
+{{ c }}║{{ r }}{% if loop.index == 2 %}{{ b }}{% endif %}{{ ('%-62s' | format(row))[:62] }}{{ r }}{{ c }}║{{ r }}
+{% endfor %}
+{{ c }}╚══════════════════════════════════════════════════════════════╝{{ r }}

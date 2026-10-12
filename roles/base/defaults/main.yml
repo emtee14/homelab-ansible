@@ -1,0 +1,3 @@
+---
+ansible_pull_repo: github.com/emtee14/homelab-ansible
+ansible_pull_interval: 15 minutes
