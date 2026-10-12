@@ -23,8 +23,8 @@
   ansible.builtin.copy:
     dest: /etc/motd.d/ansible-managed
     content: |
-      ===========
-      This host is managed by Ansible (ansible-pull from homelab-ansible).
-      Manual changes may be overwritten.
-      ===========
+      ========================================================================
+        This host is managed by Ansible (ansible-pull from homelab-ansible).  
+        Manual changes may be overwritten.
+      ========================================================================
     mode: "0644"
