@@ -19,7 +19,7 @@
       failed_when: false
 
     - name: Fallback - find host groups containing this host
-      ansible.builtin.command: "ipa hostgroup-find --host={{ ansible_facts['fqdn'] }} --raw"
+      ansible.builtin.command: "ipa hostgroup-find --hosts={{ ansible_facts['fqdn'] }} --raw"
       register: ipa_hostgroup_find
       changed_when: false
       when: ipa_host.rc != 0 or 'memberof' not in ipa_host.stdout
