@@ -14,6 +14,6 @@
 - name: Announce that this host is managed by Ansible
   ansible.builtin.template:
     src: motd.j2
-    dest: /etc/motd.d/ansible-managed
+    dest: /etc/motd.d/9999-ansible-managed
     mode: "0644"
 
