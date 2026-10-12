@@ -12,3 +12,19 @@
     name: "{{ 'ssh' if ansible_facts['os_family'] == 'Debian' else 'sshd' }}"
     state: started
     enabled: true
+
+- name: Ensure motd.d exists
+  ansible.builtin.file:
+    path: /etc/motd.d
+    state: directory
+    mode: "0755"
+
+- name: Announce that this host is managed by Ansible
+  ansible.builtin.copy:
+    dest: /etc/motd.d/ansible-managed
+    content: |
+      ===========
+      This host is managed by Ansible (ansible-pull from homelab-ansible).
+      Manual changes may be overwritten.
+      ===========
+    mode: "0644"
