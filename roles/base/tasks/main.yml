@@ -2,16 +2,8 @@
 - name: Install baseline packages
   ansible.builtin.package:
     name:
-      - git
       - curl
-      - vim
     state: present
-
-- name: Ensure sshd is enabled and running
-  ansible.builtin.service:
-    name: "{{ 'ssh' if ansible_facts['os_family'] == 'Debian' else 'sshd' }}"
-    state: started
-    enabled: true
 
 - name: Ensure motd.d exists
   ansible.builtin.file:
@@ -25,7 +17,3 @@
     dest: /etc/motd.d/ansible-managed
     mode: "0644"
 
-- name: Remove old test-group MOTD marker
-  ansible.builtin.file:
-    path: /etc/motd.d/test-group
-    state: absent
