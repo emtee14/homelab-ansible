@@ -13,13 +13,13 @@
       changed_when: false
 
     - name: Read own host record from IPA
-      ansible.builtin.command: "ipa host-show {{ ansible_fqdn }} --raw"
+      ansible.builtin.command: "ipa host-show {{ ansible_facts['fqdn'] }} --raw"
       register: ipa_host
       changed_when: false
       failed_when: false
 
     - name: Fallback - find host groups containing this host
-      ansible.builtin.command: "ipa hostgroup-find --host={{ ansible_fqdn }} --raw"
+      ansible.builtin.command: "ipa hostgroup-find --host={{ ansible_facts['fqdn'] }} --raw"
       register: ipa_hostgroup_find
       changed_when: false
       when: ipa_host.rc != 0 or 'memberof' not in ipa_host.stdout
