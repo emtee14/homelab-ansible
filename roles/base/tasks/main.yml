@@ -17,3 +17,21 @@
     dest: /etc/motd.d/9999-ansible-managed
     mode: "0644"
 
+- name: Install ansible-pull service
+  ansible.builtin.template:
+    src: ansible-pull.service.j2
+    dest: /etc/systemd/system/ansible-pull.service
+    mode: "0644"
+
+- name: Install ansible-pull timer
+  ansible.builtin.template:
+    src: ansible-pull.timer.j2
+    dest: /etc/systemd/system/ansible-pull.timer
+    mode: "0644"
+
+- name: Enable and start ansible-pull timer
+  ansible.builtin.systemd:
+    name: ansible-pull.timer
+    enabled: true
+    state: started
+    daemon_reload: true
