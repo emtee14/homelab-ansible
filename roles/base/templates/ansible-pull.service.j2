@@ -1,0 +1,9 @@
+# {{ ansible_managed }}
+[Unit]
+Description=Converge this host with ansible-pull
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/ansible-pull --url https://{{ ansible_pull_repo }} --only-if-changed local.yml
