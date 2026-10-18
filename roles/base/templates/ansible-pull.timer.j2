@@ -1,0 +1,11 @@
+# {{ ansible_managed }}
+[Unit]
+Description=Run ansible-pull every {{ ansible_pull_interval }}
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec={{ ansible_pull_interval | replace(' ', '') }}
+RandomizedDelaySec=60
+
+[Install]
+WantedBy=timers.target
